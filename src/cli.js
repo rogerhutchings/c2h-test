@@ -22,11 +22,10 @@ const errorAndExit = (message) => {
 const openConfigFile = (configFilePath) => {
   return fsp.readFile(configFilePath, 'utf8')
     .then(configContents => yaml.safeLoad(configContents))
-    .catch(error => {
-      return (error.code === 'ENOENT')
-        ? console.log('Specified config file (%s) not found, carrying on...', configFilePath)
-        : errorAndExit(error);
-    });
+    .catch(error => (error.code === 'ENOENT')
+      ? console.log('Specified config file (%s) not found, attempting to continue...', configFilePath)
+      : errorAndExit(error)
+    );
 };
 
 const createOptions = (configFileData = {}) => {
