@@ -2,10 +2,21 @@
   "name": "c2h",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "bin": "./lib/cli.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "babel src -d lib",
+    "start": "babel src -d lib -w"
   },
   "author": "Roger Hutchings <roger@hutchin.gs> (https://www.rogerhutchin.gs/)",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "dependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-preset-latest": "^6.16.0",
+    "commander": "^2.9.0",
+    "fs-promise": "^1.0.0",
+    "handlebars": "^4.0.6",
+    "js-yaml": "^3.7.0",
+    "lodash": "^4.17.2",
+    "slug": "^0.9.1"
+  }
 }
