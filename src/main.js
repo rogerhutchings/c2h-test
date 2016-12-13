@@ -1,50 +1,26 @@
 import contentful from 'contentful';
-import Handlebars from 'handlebars';
-import fsp from 'fs-promise';
-import path from 'path';
-import slug from 'slug';
 
-let OPTIONS;
-let CLIENT;
-
-const writePosts = (posts) => {
-  const templatePath = path.resolve(__dirname, '../templates/post.hbs');
-  const postsOutputDir = `${OPTIONS.outputDir}/posts`;
-  return fsp.mkdirs(postsOutputDir)
-    .then(() => fsp.readFile(templatePath, 'utf8'))
-    .then(templateString => {
-      const template = Handlebars.compile(templateString);
-      return posts.map(post => writeOutPostFile(template, post, postsOutputDir));
-    })
-    .catch(error => console.log(error))
-};
-
-const writeOutPostFile = (template, postData, postsOutputDir) => {
-  const postSlug = slug(postData.fields.title, { lower: true });
-  const compiledTemplate = template({
-    title: postData.fields.title,
-    author: postData.fields.author[0].fields,
-    body: postData.fields.body,
-  });
-  return fsp.writeFile(`${postsOutputDir}/${postSlug}.md`, compiledTemplate);
-};
+import writePosts from './posts';
+import logger from './logger';
 
 const main = (options) => {
-  OPTIONS = options;
-  CLIENT = contentful.createClient({
+  const OPTIONS = options;
+  const CLIENT = contentful.createClient({
     space: OPTIONS.space,
     accessToken: OPTIONS.accessToken,
   });
 
+  logger.info('Fetching content types for Contentful space %s', OPTIONS.space);
   return CLIENT.getContentTypes()
     .then(contentTypes => {
+      logger.info('Found %s content types', contentTypes.items.length);
       const postId = contentTypes.items.find(type => type.name === 'Post').sys.id;
       return CLIENT.getEntries({ 
         content_type: postId, 
-        include: 1 
+        include: 1,
       });
     })
-    .then(results => writePosts(results.items));
+    .then(results => writePosts(results.items, OPTIONS));
 }
 
 export default main;

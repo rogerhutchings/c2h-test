@@ -5,7 +5,8 @@ import mapValues from 'lodash/mapValues';
 import fsp from 'fs-promise';
 import yaml from 'js-yaml';
 
-import main from './index';
+import main from './main';
+import logger from './logger';
 
 program
   .arguments('<outputDir>')
@@ -15,7 +16,7 @@ program
   .parse(process.argv);
 
 const errorAndExit = (message) => {
-  console.log(message);
+  logger.error(message);
   process.exit(1);
 };
 
@@ -23,7 +24,7 @@ const openConfigFile = (configFilePath) => {
   return fsp.readFile(configFilePath, 'utf8')
     .then(configContents => yaml.safeLoad(configContents))
     .catch(error => (error.code === 'ENOENT')
-      ? console.log('Specified config file (%s) not found, attempting to continue...', configFilePath)
+      ? logger.warn('Specified config file (%s) not found, attempting to continue...', configFilePath)
       : errorAndExit(error)
     );
 };
