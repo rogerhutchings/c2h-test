@@ -46,7 +46,7 @@ const createOptions = (configFileData = {}) => {
 };
 
 const validateOptions = (options) => {
-  for (var prop in options) {
+  for (const prop in options) {
     if (!options.hasOwnProperty(prop)) {
       continue;
     }

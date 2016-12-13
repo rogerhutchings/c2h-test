@@ -1,5 +1,4 @@
 import contentful from 'contentful';
-import util from 'util';
 import Handlebars from 'handlebars';
 import fsp from 'fs-promise';
 import path from 'path';
