@@ -10,22 +10,24 @@ let CLIENT;
 
 const writePosts = (posts) => {
   const templatePath = path.resolve(__dirname, '../templates/post.hbs');
-  return fsp.readFile(templatePath, 'utf8')
+  const postsOutputDir = `${OPTIONS.outputDir}/posts`;
+  return fsp.mkdirs(postsOutputDir)
+    .then(() => fsp.readFile(templatePath, 'utf8'))
     .then(templateString => {
       const template = Handlebars.compile(templateString);
-      return posts.map(post => writeOutPostFile(template, post));
-    });
+      return posts.map(post => writeOutPostFile(template, post, postsOutputDir));
+    })
+    .catch(error => console.log(error))
 };
 
-const writeOutPostFile = (template, postData) => {
+const writeOutPostFile = (template, postData, postsOutputDir) => {
   const postSlug = slug(postData.fields.title, { lower: true });
   const compiledTemplate = template({
     title: postData.fields.title,
     author: postData.fields.author[0].fields,
     body: postData.fields.body,
   });
-  // return compiledTemplate;
-  return fsp.writeFile(`${OPTIONS.outputDir}/posts/${postSlug}.md`, compiledTemplate);
+  return fsp.writeFile(`${postsOutputDir}/${postSlug}.md`, compiledTemplate);
 };
 
 const main = (options) => {
