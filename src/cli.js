@@ -8,6 +8,7 @@ import yaml from 'js-yaml';
 import main from './main';
 import logger from './logger';
 
+
 program
   .arguments('<outputDir>')
   .option('-s, --space <space>', 'Specify Contentful space')
@@ -15,17 +16,12 @@ program
   .option('-c, --config <configFilePath>', 'Path to a config.yaml file')
   .parse(process.argv);
 
-const errorAndExit = (message) => {
-  logger.error(message);
-  process.exit(1);
-};
-
 const openConfigFile = (configFilePath) => {
   return fsp.readFile(configFilePath, 'utf8')
     .then(configContents => yaml.safeLoad(configContents))
     .catch(error => (error.code === 'ENOENT')
       ? logger.warn('Specified config file (%s) not found, attempting to continue...', configFilePath)
-      : errorAndExit(error)
+      : logger.error(message)
     );
 };
 
@@ -53,7 +49,7 @@ const validateOptions = (options) => {
     }
 
     if (!options[prop].value) {
-      errorAndExit(options[prop].errorMessage);
+      logger.error(options[prop].errorMessage);
     }
   }
 

@@ -3,6 +3,7 @@ import contentful from 'contentful';
 import writePosts from './posts';
 import logger from './logger';
 
+
 const main = (options) => {
   const OPTIONS = options;
   const CLIENT = contentful.createClient({
