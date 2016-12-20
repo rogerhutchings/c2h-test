@@ -5,7 +5,8 @@
   "bin": "./lib/cli.js",
   "scripts": {
     "build": "babel src -d lib",
-    "start": "babel src -d lib -w"
+    "start": "babel src -d lib -w",
+    "postinstall": "npm run build"
   },
   "author": "Roger Hutchings <roger@hutchin.gs> (https://www.rogerhutchin.gs/)",
   "license": "Apache-2.0",
